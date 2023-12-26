@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "TameMyCerts.WSTEP": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:7274;http://localhost:5158"
+    }
+  }
+}

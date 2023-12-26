@@ -1,4 +1,4 @@
-﻿// Copyright © Uwe Gradenegger <uwe@gradenegger.eu>
+﻿// Copyright (c) Uwe Gradenegger <info@gradenegger.eu>
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,64 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ServiceModel;
-using System.ServiceModel.Channels;
+using System.Security.Cryptography;
+using System.Text;
+using TameMyCerts.WSTEP.Connectors;
+using TameMyCerts.WSTEP.Models;
 
-namespace TameMyCerts.WSTEP
+namespace TameMyCerts.WSTEP;
+
+[ServiceContract(Namespace = "http://docs.oasis-open.org/ws-sx/ws-trust/200512")]
+public interface ISecurityTokenService
 {
-    [ServiceContract(Namespace = "http://docs.oasis-open.org/ws-sx/ws-trust/200512")]
-    public interface ISecurityTokenService
+    [OperationContract(
+        Action = "http://schemas.microsoft.com/windows/pki/2009/01/enrollment/RST/wstep",
+        ReplyAction = "http://schemas.microsoft.com/windows/pki/2009/01/enrollment/RSTRC/wstep",
+        Name = "RequestSecurityTokenType")]
+    Message RequestSecurityToken(Message message);
+}
+
+public class SecurityTokenService : ISecurityTokenService
+{
+    private readonly IConfiguration _configuration;
+    private readonly TameMyCertsRestConnector _connector;
+
+    private readonly Gatekeeper _gatekeeper;
+
+    public SecurityTokenService(IConfiguration configuration)
     {
-        [OperationContract(
-            Action = "http://schemas.microsoft.com/windows/pki/2009/01/enrollment/RST/wstep",
-            ReplyAction = "http://schemas.microsoft.com/windows/pki/2009/01/enrollment/RSTRC/wstep",
-            Name = "RequestSecurityTokenType")]
-        Message RequestSecurityToken(Message message);
+        _configuration = configuration;
+
+        _connector = new TameMyCertsRestConnector(
+            _configuration["CAName"],
+            _configuration["ApiAddress"],
+            _configuration["ApiUser"],
+            GetApiPassword(_configuration["ApiPassword"]),
+            Convert.ToBoolean(_configuration["ApiCertificateRevocationCheck"]));
+
+        _gatekeeper = new Gatekeeper(
+            _configuration["CAName"],
+            _configuration["SignerCertificateExtendedKeyUsage"]);
+    }
+
+    public Message RequestSecurityToken(Message message)
+    {
+        var signedRequest = _gatekeeper.VerifyRequest(
+            RequestSecurityTokenType.FromMessage(message),
+            ServiceSecurityContext.Current.WindowsIdentity, out var attributeList);
+
+        var response = _connector.SubmitRequest(signedRequest, attributeList);
+
+        return response.ToMessage(message.Headers.MessageId);
+    }
+
+    private static string GetApiPassword(string encryptedPassword)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(encryptedPassword);
+
+        var encryptedBytes = Convert.FromBase64String(encryptedPassword);
+        var decryptedBytes = ProtectedData.Unprotect(encryptedBytes, null, DataProtectionScope.LocalMachine);
+
+        return Encoding.UTF8.GetString(decryptedBytes);
     }
 }

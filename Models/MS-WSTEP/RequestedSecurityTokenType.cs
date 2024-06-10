@@ -1,7 +1,9 @@
-﻿using System.ComponentModel;
+﻿// Documentation is covered by Microsoft copyrights.
+
+using System.ComponentModel;
 using System.Xml.Serialization;
 
-namespace TameMyCerts.WSTEP.Models;
+namespace TameMyCerts.WSTEP.Models.MS_WSTEP;
 
 [Serializable]
 [DesignerCategory("code")]

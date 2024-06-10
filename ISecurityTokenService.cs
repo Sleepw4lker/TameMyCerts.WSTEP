@@ -15,7 +15,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using TameMyCerts.WSTEP.Connectors;
-using TameMyCerts.WSTEP.Models;
+using TameMyCerts.WSTEP.Models.MS_WSTEP;
 
 namespace TameMyCerts.WSTEP;
 

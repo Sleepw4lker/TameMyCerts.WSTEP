@@ -23,7 +23,7 @@ using TameMyCerts.NetCore.Common.ClassExtensions;
 using TameMyCerts.NetCore.Common.Enums;
 using TameMyCerts.NetCore.Common.Models;
 using TameMyCerts.NetCore.Common.X509;
-using TameMyCerts.WSTEP.Models;
+using TameMyCerts.WSTEP.Models.MS_WSTEP;
 
 namespace TameMyCerts.WSTEP.Connectors;
 

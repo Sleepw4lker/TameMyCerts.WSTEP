@@ -23,7 +23,7 @@ builder.Logging.AddEventLog(settings =>
     settings.SourceName = appName;
 });
 
-// CoreWCF doesn't pass exceptions to logging as failures are also communicated as exceptions
+// CoreWCF doesn't pass exceptions to logging by default as SOAP failures are also thrown as exceptions
 builder.Services.AddSingleton<IServiceBehavior, UnhandledExceptionLoggingBehavior>();
 
 builder.Services.AddServiceModelServices();
@@ -37,12 +37,15 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = options.DefaultPolicy;
 });
 
+builder.Services.AddSingleton<Policy>();
 builder.Services.AddSingleton<SecurityTokenService>();
 
 var app = builder.Build();
 
 app.UseServiceModel(serviceBuilder =>
 {
+    serviceBuilder.AddService<Policy>();
+    serviceBuilder.AddServiceEndpoint<Policy, IPolicy>(new WSHttpBinding(SecurityMode.Transport), "/Service.svc/CEP");
     serviceBuilder.AddService<SecurityTokenService>();
     serviceBuilder.AddServiceEndpoint<SecurityTokenService, ISecurityTokenService>(new WSHttpBinding(SecurityMode.Transport), "/Service.svc/CES");
     var serviceMetadataBehavior = app.Services.GetRequiredService<ServiceMetadataBehavior>();

@@ -1,6 +1,8 @@
-﻿using System.ComponentModel;
+﻿// Documentation is covered by Microsoft copyrights.
 
-namespace TameMyCerts.WSTEP.Models;
+using System.ComponentModel;
+
+namespace TameMyCerts.WSTEP.Models.MS_WSTEP;
 
 // You cannot use the XmlSerializer class to describe faults. The XmlSerializerFormatAttribute has no effect on fault contracts.
 // https://learn.microsoft.com/en-us/dotnet/framework/wcf/feature-details/specifying-data-transfer-in-service-contracts

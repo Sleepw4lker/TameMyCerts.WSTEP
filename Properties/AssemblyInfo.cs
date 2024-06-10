@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
 // General Information about an assembly is controlled through the following
-// set of attributes. Change these attribute values to modify the information
+// set of AttributesType. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TameMyCerts.WSTEP")]
 [assembly: AssemblyDescription("An implementation of the MS-WSTEP protocol to use with the TameMyCerts REST API")]

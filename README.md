@@ -1,7 +1,5 @@
 # The TameMyCerts certificate enrollment proxy
 
-> **Commercial support**, **consulting services** and **maintenance agreements** are available on demand. [Contact me](https://www.gradenegger.eu/en/imprint/) for details if you are interested.
-
 A server implementation of the [MS-WSTEP](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wstep/4766a85d-0d18-4fa1-a51f-e5cb98b752ea) protocol, mimicing the [Certificate Enrollment Web Service (CES)](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831822(v=ws.11)) Windows Feature, that allows certificate Auto-Enrollment across Active Directory forest boundaries, without the requirement for a trust relationship. It is written in C# using .NET Core.
 
 ## Introduction
